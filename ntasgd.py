@@ -31,7 +31,7 @@ class NTASGD(optim.Optimizer):
                 if len(state) == 0:
                     state['step'] = 0
                     state['mu'] = 1
-                    state['ax'] = torch.zeros_like(p.data)    
+                    state['ax'] = torch.zeros_like(p.data)
                 state['step'] += 1
                 # update parameter
                 if group['weight_decay'] != 0:

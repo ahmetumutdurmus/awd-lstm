@@ -9,8 +9,8 @@ from model import Model
 from ntasgd import NTASGD
 
 parser = argparse.ArgumentParser(description="Replication of Merity et al. (2017). \n https://arxiv.org/abs/1708.02182")
+parser.add_argument("--load", type=str, default="model.tar", help="Where to find the model to finetune.")
 parser.add_argument("--data", type=str, choices=["PTB","WT2"], default="PTB", help="The dataset to run the experiment on.")
-parser.add_argument("--save", type=str, default="model.tar", help="Where to save the best model.")
 parser.add_argument("--layer_num", type=int, default=3, help="The number of LSTM layers the model has.")
 parser.add_argument("--embed_size", type=int, default=400, help="The number of hidden units per layer.")
 parser.add_argument("--hidden_size", type=int, default=1150, help="The number of hidden units per layer.")
@@ -55,7 +55,7 @@ print('Args:', args)
 print("\n")
 
 def save_model(model):
-    torch.save({'model_state_dict': model.state_dict()}, args.save)
+    torch.save({'model_state_dict': model.state_dict()}, args.load)
     
 def data_init():
     with open("./data/{}/train.txt".format(args.data), encoding="utf8") as f:
@@ -111,15 +111,18 @@ def perplexity(data, model):
             loss = F.cross_entropy(scores, y.reshape(-1))
             losses.append(loss.data.item())
     return np.exp(np.mean(losses))
-    
+
 def train(data, model, optimizer):
     trn, vld, tst = data
     tic = timeit.default_timer()
     total_words = 0
-    print("Starting training.")
-    best_val = 1e10
+    print("Starting finetuning.")
+    val_perp = perplexity(vld, model)
+    print("Validation perplexity at the start of finetuning process: {:.3f}".format(val_perp))
+    best_val = val_perp
     try:
-        for epoch in range(args.epochs):        
+        epoch = 0
+        while optimizer.check(val_perp) != True:
             seq_len = get_seq_len(args.bptt)
             num_batch = ((trn.size(0)-1)// seq_len + 1)
             optimizer.lr(seq_len/args.bptt*args.lr)
@@ -158,7 +161,6 @@ def train(data, model, optimizer):
                 prm.data = st['ax'].clone().detach()
     
             val_perp = perplexity(vld, model)
-            optimizer.check(val_perp)
     
             if val_perp < best_val:
                 best_val = val_perp
@@ -170,16 +172,16 @@ def train(data, model, optimizer):
                 prm.data = tmp[prm].clone().detach()
                 
             print("Epoch : {:d} || Validation set perplexity : {:.3f}".format(epoch+1, val_perp))
-            print("*************************************************\n")        
+            print("*************************************************\n")
+            epoch += 1
     except KeyboardInterrupt:
-        print("Finishing training early.")
-    checkpoint = torch.load(args.save)
+        print("Finishing finetuning early.")
+    checkpoint = torch.load(args.load)
     model.load_state_dict(checkpoint['model_state_dict'])
     tst_perp = perplexity(tst, model)
     print("Test set perplexity of best model: {:.3f}".format(tst_perp))
 
-
-def main():
+def finetune():
     trn, vld, tst, vocab_size = data_init()
     trn = batchify(trn, args.batch_size)
     vld = batchify(vld, args.valid_batch_size)
@@ -187,7 +189,9 @@ def main():
     model = Model(vocab_size, args.embed_size, args.hidden_size, args.layer_num, args.w_drop, args.dropout_i, 
                   args.dropout_l, args.dropout_o, args.dropout_e, args.winit, args.lstm_type)
     model.to("cuda:0")
-    optimizer = NTASGD(model.parameters(), lr=args.lr, n=args.non_mono, weight_decay=args.weight_decay, fine_tuning=False)
+    checkpoint = torch.load(args.load)
+    model.load_state_dict(checkpoint['model_state_dict'])
+    optimizer = NTASGD(model.parameters(), lr=args.lr, n=args.non_mono, weight_decay=args.weight_decay, fine_tuning=True)
     train((trn, vld, tst), model, optimizer)
 
-main()
+finetune()
