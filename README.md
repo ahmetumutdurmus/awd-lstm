@@ -1,5 +1,5 @@
 # Regularizing and Optimizing LSTM Language Models by Merity et al. (2017).
-This repository contains the replication of 'Regularizing and Optimizing LSTM Language Models' by Merity et al. (2017).
+This repository contains the replication of "Regularizing and Optimizing LSTM Language Models" by Merity et al. (2017).
 
 The AWD-LSTM model introduced in the paper still forms the basis for the state-of-the-art results in language modeling on smaller benchmark datasets such as the Penn Treebank and WikiText-2 according to the [NLP-Progress](https://nlpprogress.com/english/language_modeling.html) repository. On bigger datasets, such as WikiText-103 and Google One Billion Word Benchmark, the state-of-the-art is generally achieved with introducing some form of attention to the model. Generally this is some variant of the [Transformer](https://arxiv.org/abs/1706.03762) model. This could likely be explained by the fact that attention models tend to have greater number of parameters and can overfit the data more easily. 
 
