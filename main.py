@@ -9,6 +9,7 @@ from model import Model
 from ntasgd import NTASGD
 
 parser = argparse.ArgumentParser(description="Replication of Merity et al. (2017). \n https://arxiv.org/abs/1708.02182")
+parser.add_argument("--data", type=str, choices=["PTB","WT2"], default="WT2", help="The dataset to run the experiment on.")
 parser.add_argument("--layer_num", type=int, default=3, help="The number of LSTM layers the model has.")
 parser.add_argument("--embed_size", type=int, default=400, help="The number of hidden units per layer.")
 parser.add_argument("--hidden_size", type=int, default=1150, help="The number of hidden units per layer.")
@@ -52,13 +53,13 @@ def save_model(model):
     torch.save({'model_state_dict': model.state_dict()}, 'model.tar')
     
 def data_init():
-    with open("./data/ptb.train.txt") as f:
+    with open("./data/{}/train.txt".format(args.data), encoding="utf8") as f:
         file = f.read()
         trn = file[1:].split(' ')
-    with open("./data/ptb.valid.txt") as f:
+    with open("./data/{}/valid.txt".format(args.data), encoding="utf8") as f:
         file = f.read()
         vld = file[1:].split(' ')
-    with open("./data/ptb.test.txt") as f:
+    with open("./data/{}/test.txt".format(args.data), encoding="utf8") as f:
         file = f.read()
         tst = file[1:].split(' ')
     words = sorted(set(trn))
@@ -184,5 +185,7 @@ def main():
     model.to("cuda:0")
     optimizer = NTASGD(model.parameters(), lr=args.lr, n=args.non_mono, weight_decay=args.weight_decay, fine_tuning=False)
     train((trn, vld, tst), model, optimizer)
+    
 
 main()
+
