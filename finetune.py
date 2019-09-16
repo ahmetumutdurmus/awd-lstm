@@ -29,7 +29,6 @@ parser.add_argument("--bptt", type=int, default=70, help="The sequence length pa
 parser.add_argument("--ar", type=float, default=2, help="The AR parameter.")
 parser.add_argument("--tar", type=float, default=1, help="The TAR parameter.")
 parser.add_argument("--weight_decay", type=float, default=1.2e-6, help="The weight decay parameter.")
-parser.add_argument("--epochs", type=int, default=500, help="Total number of epochs for training.")
 parser.add_argument("--lr", type=float, default=30, help="The learning rate.")
 parser.add_argument("--max_grad_norm", type=float, default=0.25, help="The maximum norm of gradients we impose on training.")
 parser.add_argument("--non_mono", type=int, default=5, help="The masking length for non-monotonicity. Referred to as 'n' in the paper.")
