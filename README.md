@@ -28,7 +28,7 @@ The experiments run on the two different word-level datasets can be replicated f
 
 Couple of things to note:
 
-You can use both my implementation of LSTM by setting --lstm_type custom or the PyTorch's embedded C++ implementation using `--lstm_type pytorch`. PyTorch's implementation is about 2 times faster.
+You can use both my implementation of LSTM by setting `--lstm_type custom` or the PyTorch's embedded C++ implementation using `--lstm_type pytorch`. PyTorch's implementation is about 2 times faster.
 
 You can interrupt the training or finetuning process at any time without losing your model with your keyboard using `Ctrl-C`. I have implemented the relevant error catching code in the fashion of the original authors.
 
