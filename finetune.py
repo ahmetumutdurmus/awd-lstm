@@ -119,6 +119,7 @@ def train(data, model, optimizer):
     val_perp = perplexity(vld, model)
     print("Validation perplexity at the start of finetuning process: {:.3f}".format(val_perp))
     best_val = val_perp
+    val_perp = 10e7
     try:
         epoch = 0
         while optimizer.check(val_perp) != True:
