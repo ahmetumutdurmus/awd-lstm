@@ -104,8 +104,8 @@ def perplexity(data, model):
         batch_size = data[0][0].size(1)
         states = model.state_init(batch_size)
         for x, y in data:
-            x = x.to("cuda:0")
-            y = y.to("cuda:0")
+            x = x.to(args.device)
+            y = y.to(args.device)
             scores, states = model(x, states)
             loss = F.cross_entropy(scores, y.reshape(-1))
             losses.append(loss.data.item())
@@ -128,8 +128,8 @@ def train(data, model, optimizer):
             states = model.state_init(args.batch_size)
             model.train()
             for i, (x, y) in enumerate(minibatch(trn, seq_len)):
-                x = x.to("cuda:0")
-                y = y.to("cuda:0")
+                x = x.to(args.device)
+                y = y.to(args.device)
                 total_words += x.numel()
                 states = model.detach(states)
                 scores, states, activations = model(x, states)
@@ -187,7 +187,7 @@ def finetune():
     tst = batchify(tst, args.test_batch_size)
     model = Model(vocab_size, args.embed_size, args.hidden_size, args.layer_num, args.w_drop, args.dropout_i, 
                   args.dropout_l, args.dropout_o, args.dropout_e, args.winit, args.lstm_type)
-    model.to("cuda:0")
+    model.to(args.device)
     checkpoint = torch.load(args.load)
     model.load_state_dict(checkpoint['model_state_dict'])
     optimizer = NTASGD(model.parameters(), lr=args.lr, n=args.non_mono, weight_decay=args.weight_decay, fine_tuning=True)
