@@ -20,11 +20,11 @@ The experiments run on the two different word-level datasets can be replicated f
 
 ### Word Level Penn Treebank (PTB)
 + `python main.py --data PTB --save model.tar --layer_num 3 --embed_size 400 --hidden_size 1150 --lstm_type pytorch --w_drop 0.5 --dropout_i 0.4 --dropout_l 0.3 --dropout_o 0.4 --dropout_e 0.1 --winit 0.1 --batch_size 40 --bptt 70 --ar 2 --tar 1 --weight_decay 1.2e-6 --epochs 750 --lr 30 --max_grad_norm 0.25 --non_mono 5 --device gpu --log 100`
-+ `python ensemble.py --data PTB --load model.tar --layer_num 3 --embed_size 400 --hidden_size 1150 --lstm_type pytorch --w_drop 0.5 --dropout_i 0.4 --dropout_l 0.3 --dropout_o 0.4 --dropout_e 0.1 --winit 0.1 --batch_size 40 --bptt 70 --ar 2 --tar 1 --weight_decay 1.2e-6 --lr 30 --max_grad_norm 0.25 --non_mono 5 --device gpu --log 100`
++ `python finetune.py --data PTB --load model.tar --layer_num 3 --embed_size 400 --hidden_size 1150 --lstm_type pytorch --w_drop 0.5 --dropout_i 0.4 --dropout_l 0.3 --dropout_o 0.4 --dropout_e 0.1 --winit 0.1 --batch_size 40 --bptt 70 --ar 2 --tar 1 --weight_decay 1.2e-6 --lr 30 --max_grad_norm 0.25 --non_mono 5 --device gpu --log 100`
 
 ### Word Level WikiText-2 (WT2)
 + `python main.py --data PTB --save model.tar --layer_num 3 --embed_size 400 --hidden_size 1150 --lstm_type pytorch --w_drop 0.65 --dropout_i 0.4 --dropout_l 0.3 --dropout_o 0.4 --dropout_e 0.1 --winit 0.1 --batch_size 80 --bptt 70 --ar 2 --tar 1 --weight_decay 1.2e-6 --epochs 750 --lr 30 --max_grad_norm 0.25 --non_mono 5 --device gpu --log 50`
-+ `python ensemble.py --data PTB --load model.tar --layer_num 3 --embed_size 400 --hidden_size 1150 --lstm_type pytorch --w_drop 0.65 --dropout_i 0.4 --dropout_l 0.3 --dropout_o 0.4 --dropout_e 0.1 --winit 0.1 --batch_size 80 --bptt 70 --ar 2 --tar 1 --weight_decay 1.2e-6 --lr 30 --max_grad_norm 0.25 --non_mono 5 --device gpu --log 50`
++ `python finetune.py --data PTB --load model.tar --layer_num 3 --embed_size 400 --hidden_size 1150 --lstm_type pytorch --w_drop 0.65 --dropout_i 0.4 --dropout_l 0.3 --dropout_o 0.4 --dropout_e 0.1 --winit 0.1 --batch_size 80 --bptt 70 --ar 2 --tar 1 --weight_decay 1.2e-6 --lr 30 --max_grad_norm 0.25 --non_mono 5 --device gpu --log 50`
 
 Couple of things to note:
 
